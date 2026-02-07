@@ -54,6 +54,32 @@
   text-align: center;
 }
 
+.cart-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.cart-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: 320px;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(14,30,37,0.08);
+  z-index: 60;
+  overflow: hidden;
+}
+
+.cart-dropdown .cart-items > div:first-child {
+  border-top: none;
+}
+
 @media (max-width: 560px) {
   .header-inner {
     flex-direction: column;

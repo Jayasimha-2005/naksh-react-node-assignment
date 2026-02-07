@@ -1,10 +1,13 @@
-import React, { useContext } from 'react';
+import React, { useContext, createContext } from 'react';
 import './ProductCard.css';
 import { CartContext } from '../context/CartContext';
 
 function ProductCard({ product }) {
   const { name, price, image } = product;
-  const { addToCart } = useContext(CartContext);
+  const safeDefault = { addToCart: () => {} };
+  const SafeContext = CartContext || createContext(safeDefault);
+  const ctx = useContext(SafeContext) || safeDefault;
+  const { addToCart } = ctx;
 
   return (
     <article className="product-card">
