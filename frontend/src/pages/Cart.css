@@ -1,0 +1,17 @@
+/* Minimal cart page styles */
+main h2 {
+  margin: 0 0 12px 0;
+}
+
+aside h3 {
+  margin: 0 0 8px 0;
+}
+
+@media (max-width: 760px) {
+  main {
+    padding: 12px;
+  }
+  .cart-grid {
+    grid-template-columns: 1fr;
+  }
+}

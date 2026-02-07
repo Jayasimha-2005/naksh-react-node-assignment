@@ -35,6 +35,24 @@
   flex-direction: column;
 }
 
+.product-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 6px;
+}
+
+.icon-btn {
+  background: rgba(255,255,255,0.9);
+  border: 1px solid #eee;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.product-image-wrapper { position: relative; }
+
 .product-name {
   font-size: 1rem;
   margin: 0 0 6px 0;

@@ -6,6 +6,7 @@ const defaultCart = {
   removeFromCart: () => {},
   updateQuantity: () => {},
   totalItems: 0,
+  totalPrice: 0,
 };
 
 export const CartContext = createContext(defaultCart);
@@ -153,8 +154,9 @@ export function CartProvider({ children }) {
     })();
   };
 
-  const totalItems = useMemo(
-    () => cartItems.reduce((sum, item) => sum + (item.quantity || 0), 0),
+  const totalItems = useMemo(() => cartItems.reduce((sum, item) => sum + (item.quantity || 0), 0), [cartItems]);
+  const totalPrice = useMemo(
+    () => cartItems.reduce((sum, item) => sum + (Number(item.price || 0) * (item.quantity || 0)), 0),
     [cartItems]
   );
 
@@ -164,6 +166,7 @@ export function CartProvider({ children }) {
     removeFromCart,
     updateQuantity,
     totalItems,
+    totalPrice,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

@@ -1,8 +1,8 @@
 import React from 'react';
 import './ProductCard.css';
 
-function Cart({ items, onRemove, onUpdate }) {
-  const total = items.reduce((s, it) => s + (it.price || 0) * (it.quantity || 0), 0);
+function Cart({ items, onRemove, onUpdate, onViewCart }) {
+  const total = items.reduce((s, it) => s + (Number(it.price || 0) * (it.quantity || 0)), 0);
 
   return (
     <div className="cart-dropdown" role="dialog" aria-label="Cart">
@@ -25,10 +25,13 @@ function Cart({ items, onRemove, onUpdate }) {
           </div>
         ))}
       </div>
-      <div style={{ padding: 12, borderTop: '1px solid #eee' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div style={{ padding: 12, borderTop: '1px solid #eee', display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
           <strong>Total</strong>
           <strong>₹{total}</strong>
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={() => onViewCart && onViewCart()} style={{ padding: '6px 10px', background: '#0b5fff', color: '#fff', border: 'none', borderRadius: 6 }}>View Cart</button>
         </div>
       </div>
     </div>

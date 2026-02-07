@@ -12,7 +12,9 @@ const { errorHandler } = require('./middleware/errorHandler');
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+// Increase JSON and URL-encoded body size limits to accept base64 image payloads
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 const MONGO_URI = process.env.MONGO_URI;
 if (!MONGO_URI) {

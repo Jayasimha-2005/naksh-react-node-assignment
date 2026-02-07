@@ -23,7 +23,7 @@
 }
 
 .search {
-  flex: 1 1 auto;
+  flex: 1 1 520px;
 }
 
 .search input {
@@ -31,6 +31,27 @@
   padding: 8px 10px;
   border: 1px solid #ddd;
   border-radius: 6px;
+}
+
+.role-badge {
+  background: #0b5fff;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  margin-left: 8px;
+}
+
+.role-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.role-toggle input[type="checkbox"] {
+  transform: scale(1.15);
+  margin-right: 6px;
 }
 
 .cart {
