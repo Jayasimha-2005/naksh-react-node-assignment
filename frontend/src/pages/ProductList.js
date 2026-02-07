@@ -6,7 +6,9 @@ import AddProduct from '../components/AddProduct';
 import demoProducts from '../data/products';
 
 function ProductList({ searchProp, onSearch }) {
-  const [search, setSearch] = useState(() => searchProp || '');
+  // `search` is controlled by App/Header and passed as `searchProp`.
+  // Keep ProductList stateless for search to avoid duplicate state and HMR warnings.
+  const search = searchProp || '';
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -66,9 +68,7 @@ function ProductList({ searchProp, onSearch }) {
   const roleCtx = useContext(RoleContext) || { role: 'buyer' };
   const role = roleCtx && roleCtx.role ? roleCtx.role : 'buyer';
 
-  useEffect(() => {
-    if (typeof onSearch === 'function') onSearch(search);
-  }, [search, onSearch]);
+  // Search is controlled by parent; no local effect required.
 
   const filtered = useMemo(() => {
     const key = (search || '').trim().toLowerCase();
