@@ -131,7 +131,6 @@ Railway offers free trial credits and automatic deployments from Git.
 4. Railway will automatically detect the Dockerfile
 5. Add environment variable:
    - `MONGO_URI`: Your MongoDB Atlas connection string
-   - `PORT`: 5000 (optional, Railway sets this automatically)
 6. Click "Deploy"
 
 #### Step 3: Access Your App
@@ -139,7 +138,32 @@ Railway offers free trial credits and automatic deployments from Git.
 - Both frontend and backend are served from the same domain
 - API endpoints: `https://your-app.railway.app/products`, `/cart`, `/health`
 
-**Note**: The single Dockerfile deploys both frontend and backend together, perfect for Railway's architecture.
+### 🎨 Render Blueprint Deployment (One-Click Deploy)
+
+**Even easier than Railway!** Render Blueprint deploys everything automatically.
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+
+#### Quick Deploy Steps:
+1. Click the "Deploy to Render" button above (or go to [render.com](https://render.com/))
+2. Sign up/login to Render
+3. Click "New" → "Blueprint"
+4. Connect your GitHub repository
+5. Render detects `render.yaml` automatically
+6. Add environment variable:
+   - `MONGO_URI`: Your MongoDB Atlas connection string
+7. Click "Apply" - Done! ✅
+
+Your app will be live at: `https://naksh-jewels.onrender.com`
+
+**Benefits:**
+- Free tier available (500 hours/month)
+- Automatic HTTPS
+- Auto-deploys on git push
+- Health checks built-in
+- No credit card required for free tier
+
+**Note**: The single Dockerfile deploys both frontend and backend together, perfect for Railway and Render.
 
 ## 📚 API Endpoints
 

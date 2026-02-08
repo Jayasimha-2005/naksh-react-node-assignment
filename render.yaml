@@ -1,0 +1,12 @@
+services:
+  # Single web service that builds and serves both frontend and backend
+  - type: web
+    name: naksh-jewels
+    env: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: PORT
+        value: 5000
+    healthCheckPath: /health
