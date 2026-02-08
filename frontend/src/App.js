@@ -15,7 +15,11 @@ function App() {
       <CartProvider>
         <div className="App">
           <Header searchValue={search} onSearch={setSearch} onViewCart={() => setView('cart')} />
-          {view === 'products' ? <ProductList searchProp={search} onSearch={setSearch} /> : <CartPage />}
+          {view === 'products' ? (
+            <ProductList searchProp={search} onSearch={setSearch} />
+          ) : (
+            <CartPage onBack={() => setView('products')} />
+          )}
         </div>
       </CartProvider>
     </RoleProvider>

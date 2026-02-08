@@ -39,6 +39,9 @@ async function connectToMongoDB() {
       await mongoose.connect(MONGO_URI, {
         serverSelectionTimeoutMS: 10000,
         socketTimeoutMS: 45000,
+        tls: true,
+        tlsAllowInvalidCertificates: false,
+        tlsAllowInvalidHostnames: false,
       });
       
       console.log('✅ MongoDB connected successfully');

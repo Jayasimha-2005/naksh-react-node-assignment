@@ -154,6 +154,25 @@ export function CartProvider({ children }) {
     })();
   };
 
+  const clearCart = async () => {
+    // Clear cart on backend and locally
+    try {
+      // Attempt to delete all items from backend
+      await Promise.all(
+        cartItems.map(item => 
+          fetch(`${API_BASE}/cart/${item.id}`, { method: 'DELETE' }).catch(err => 
+            console.warn('Failed to delete cart item', err)
+          )
+        )
+      );
+    } catch (err) {
+      console.warn('Clear cart request failed', err);
+    } finally {
+      // Always clear local state
+      setCartItems([]);
+    }
+  };
+
   const totalItems = useMemo(() => cartItems.reduce((sum, item) => sum + (item.quantity || 0), 0), [cartItems]);
   const totalPrice = useMemo(
     () => cartItems.reduce((sum, item) => sum + (Number(item.price || 0) * (item.quantity || 0)), 0),
@@ -165,6 +184,7 @@ export function CartProvider({ children }) {
     addToCart,
     removeFromCart,
     updateQuantity,
+    clearCart,
     totalItems,
     totalPrice,
   };

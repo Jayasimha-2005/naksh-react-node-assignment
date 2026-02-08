@@ -1,13 +1,37 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { CartContext } from '../context/CartContext';
 import './Cart.css';
 
 function CartPage({ onBack }) {
-  const cart = useContext(CartContext) || { cartItems: [], updateQuantity: () => {}, removeFromCart: () => {}, totalPrice: 0, totalItems: 0 };
-  const { cartItems, updateQuantity, removeFromCart, totalPrice, totalItems } = cart;
+  const cart = useContext(CartContext) || { cartItems: [], updateQuantity: () => {}, removeFromCart: () => {}, clearCart: () => {}, totalPrice: 0, totalItems: 0 };
+  const { cartItems, updateQuantity, removeFromCart, clearCart, totalPrice, totalItems } = cart;
+  const [showAnimation, setShowAnimation] = useState(false);
+
+  const handleCheckout = () => {
+    setShowAnimation(true);
+    // Clear cart and redirect after animation completes
+    setTimeout(() => {
+      if (clearCart) clearCart();
+      setTimeout(() => {
+        setShowAnimation(false);
+        if (onBack) onBack();
+      }, 500);
+    }, 3500); // 3.5 seconds for full animation
+  };
 
   return (
     <div className="cart-page">
+      {/* Checkout Animation Overlay */}
+      {showAnimation && (
+        <div className="checkout-animation-overlay">
+          <div className="delivery-animation">
+            <div className="delivery-bus">🚚</div>
+            <div className="delivery-checkmark">✓</div>
+            <div className="delivery-message">Order Placed Successfully!</div>
+          </div>
+        </div>
+      )}
+
       <div className="cart-header">
         <h1 className="cart-title">Shopping Cart ({totalItems || 0} items)</h1>
         <button className="btn-secondary" onClick={() => onBack && onBack()}>
@@ -18,9 +42,10 @@ function CartPage({ onBack }) {
       {cartItems.length === 0 ? (
         <div className="cart-empty">
           <div className="empty-icon">🛒</div>
-          <h2 style={{ color: '#374151', marginBottom: 8 }}>Your cart is empty</h2>
-          <p style={{ color: '#6b7280', marginBottom: 24 }}>Add some amazing jewelry to get started!</p>
-          <button className="btn-secondary" onClick={() => onBack && onBack()}>
+          <h2 className="empty-title">Your cart is empty</h2>
+          <p className="empty-subtitle">No items available in your cart right now</p>
+          <p className="empty-description">Add some amazing jewelry to get started!</p>
+          <button className="btn-primary empty-cta" onClick={() => onBack && onBack()}>
             Start Shopping
           </button>
         </div>
@@ -87,7 +112,7 @@ function CartPage({ onBack }) {
               <span>Total</span>
               <span>₹{(totalPrice * 1.18).toFixed(2)}</span>
             </div>
-            <button className="checkout-btn">
+            <button className="checkout-btn" onClick={handleCheckout}>
               🛍️ Proceed to Checkout
             </button>
             <div style={{ marginTop: 16, padding: 12, background: '#f0fdf4', borderRadius: 8, fontSize: '0.9rem', color: '#166534', textAlign: 'center' }}>
