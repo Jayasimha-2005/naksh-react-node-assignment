@@ -1,0 +1,28 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+.env
+.env.local
+*.md
+!README.md
+.DS_Store
+.vscode
+.idea
+
+# Backend specific
+backend/node_modules
+backend/.env
+
+# Frontend specific
+frontend/node_modules
+frontend/.env
+frontend/build
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Docker
+docker-compose.yml
+Dockerfile.old

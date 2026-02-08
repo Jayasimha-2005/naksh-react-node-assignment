@@ -113,6 +113,34 @@ docker-compose up --build
 docker-compose down
 ```
 
+### 🚂 Railway Deployment (Recommended for Production)
+
+Railway offers free trial credits and automatic deployments from Git.
+
+#### Step 1: Prepare MongoDB Atlas
+1. Go to [MongoDB Atlas](https://cloud.mongodb.com/)
+2. Create a free M0 cluster
+3. Create a database user and password
+4. Whitelist all IPs: `0.0.0.0/0`
+5. Copy your connection string
+
+#### Step 2: Deploy to Railway
+1. Go to [railway.app](https://railway.app/) and sign up
+2. Click "New Project" → "Deploy from GitHub repo"
+3. Select your repository
+4. Railway will automatically detect the Dockerfile
+5. Add environment variable:
+   - `MONGO_URI`: Your MongoDB Atlas connection string
+   - `PORT`: 5000 (optional, Railway sets this automatically)
+6. Click "Deploy"
+
+#### Step 3: Access Your App
+- Railway will provide a public URL like: `https://your-app.railway.app`
+- Both frontend and backend are served from the same domain
+- API endpoints: `https://your-app.railway.app/products`, `/cart`, `/health`
+
+**Note**: The single Dockerfile deploys both frontend and backend together, perfect for Railway's architecture.
+
 ## 📚 API Endpoints
 
 ### Products
