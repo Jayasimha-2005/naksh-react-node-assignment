@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
 import './ProductCard.css';
 import './Modal.css';
-import { CartContext } from '../context/CartContext';
 import { RoleContext } from '../context/RoleContext';
+import { CartContext } from '../context/CartContext';
 
 function ProductCard({ product }) {
   const { name, price, image } = product;
@@ -10,12 +10,50 @@ function ProductCard({ product }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [editForm, setEditForm] = useState({ name, price, image });
   const [isLoading, setIsLoading] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  // Removed add-to-cart toast state (button removed by request)
 
-  const cartCtx = useContext(CartContext);
-  const addToCart = (cartCtx && cartCtx.addToCart) || (() => {});
+  // Use cart context to add items to cart when buyer wants
+  const cartCtx = useContext(CartContext) || {
+    addToCart: async () => ({ ok: false, error: { message: 'Cart not available' } }),
+  };
   const roleCtx = useContext(RoleContext) || { role: 'buyer' };
   const role = roleCtx && roleCtx.role ? roleCtx.role : 'buyer';
+
+  const handleAddToCart = async (e) => {
+    if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+
+    if (isAdding) return; // prevent double clicks
+    setIsAdding(true);
+
+    const pid = String(product._id || product.id || product.productId || product.name);
+    const payload = { id: pid, name: product.name, price: Number(product.price || 0) };
+
+    try {
+      const res = await cartCtx.addToCart({ id: payload.id, name: payload.name, price: payload.price });
+      console.log('[ProductCard] addToCart result', res);
+      if (res && res.ok === false) {
+        console.warn('Failed to add to cart', res.error);
+        try { alert('Could not add to cart: ' + (res.error && res.error.message ? res.error.message : 'Server rejected request')); } catch (__) {}
+        setIsAdding(false);
+        return;
+      }
+
+      // Ask the app to navigate to cart view
+      try {
+        window.dispatchEvent(new CustomEvent('navigate', { detail: { view: 'cart' } }));
+      } catch (err) {
+        try { window.dispatchEvent(new Event('navigate')); } catch (__e) {}
+      }
+    } catch (err) {
+      console.error('Error adding to cart', err);
+      try { alert('Unexpected error adding to cart'); } catch (__) {}
+    } finally {
+      setIsAdding(false);
+    }
+  };
 
   const handleDelete = async () => {
     setIsLoading(true);
@@ -83,7 +121,7 @@ function ProductCard({ product }) {
     <>
       <article className="product-card">
         <div className="product-image-wrapper">
-          <img src={image} alt={name} className="product-image" />
+          <img src={image} alt={name} className="product-image" draggable={false} onDragStart={(e) => e.preventDefault()} />
           {role === 'seller' && (
             <div className="product-actions">
               <button className="icon-btn" title="Edit" onClick={() => { setEditForm({ name, price, image }); setShowEditModal(true); }}>✏️</button>
@@ -94,10 +132,21 @@ function ProductCard({ product }) {
         <div className="product-body">
           <h3 className="product-name">{name}</h3>
           <p className="product-price">₹{price}</p>
-          <button className="add-to-cart" type="button" onClick={() => addToCart({ id: product.id || product._id, name, price })}>
-            Add to Cart
-          </button>
+          {role !== 'seller' && (
+            <button
+              className="add-to-cart"
+              type="button"
+              onClick={(e) => handleAddToCart(e)}
+              onPointerDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
+              onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
+              onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); }}
+              disabled={isAdding}
+            >
+              {isAdding ? 'Adding...' : '🛒 Add to Cart'}
+            </button>
+          )}
         </div>
+        {/* Add-to-cart button removed per user request (toast removed) */}
       </article>
 
       {/* Edit Modal */}

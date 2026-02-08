@@ -64,6 +64,12 @@
   transition: transform 0.3s ease;
 }
 
+/* Prevent drag image and selection on mobile/desktop */
+.product-image {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
 .product-card:hover .product-image {
   transform: scale(1.1);
 }
@@ -144,6 +150,46 @@
   transform: translateY(0);
 }
 
+/* Added to Cart Toast */
+.added-toast {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+  animation: toastPop 0.3s ease;
+  z-index: 10;
+  pointer-events: none;
+}
+
+@keyframes toastPop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Prevent accidental selection when clicking cards/buttons */
+.product-card, .product-card * {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 /* Grid container styles (used by ProductList) */
 .product-grid {
   display: grid;
@@ -154,17 +200,66 @@
   margin: 0 auto;
 }
 
+.product-card .product-name {
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+}
+
+.product-card .product-price {
+  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+}
+
+.product-card .add-to-cart {
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
+  padding: clamp(10px, 2vw, 12px) clamp(16px, 3vw, 20px);
+}
+
+@media (max-width: 968px) {
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+}
+
 @media (max-width: 768px) {
   .product-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 16px;
     padding: 16px;
+  }
+  
+  .product-actions {
+    top: 8px;
+    right: 8px;
+    gap: 6px;
+  }
+  
+  .icon-btn {
+    padding: 8px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+    padding: 12px;
   }
 }
 
 @media (max-width: 480px) {
   .product-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    padding: 12px;
+    gap: 10px;
+  }
+  
+  .product-card {
+    border-radius: 12px;
+  }
+  
+  .product-body {
     padding: 12px;
   }
 }

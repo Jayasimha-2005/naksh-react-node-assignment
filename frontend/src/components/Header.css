@@ -146,3 +146,52 @@
     justify-self: end;
   }
 }
+
+@media (max-width: 968px) {
+  .header-inner {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 16px;
+  }
+  
+  .brand {
+    font-size: 1.3rem;
+  }
+  
+  .search {
+    order: 3;
+    width: 100%;
+    margin: 0;
+    flex: 1 1 100%;
+  }
+  
+  .role-badge {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-inner {
+    padding: 12px;
+  }
+  
+  .brand {
+    font-size: 1.1rem;
+  }
+  
+  .cart-button {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+  
+  .cart-badge {
+    width: 18px;
+    height: 18px;
+    font-size: 0.65rem;
+  }
+  
+  .search input {
+    font-size: 16px;
+  }
+}
