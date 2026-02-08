@@ -1,3 +1,6 @@
+/* ============================================
+   PRODUCT CARD CONTAINER
+   ============================================ */
 .product-card {
   border: none;
   border-radius: 16px;
@@ -10,6 +13,7 @@
   position: relative;
 }
 
+/* Gradient border effect on hover ONLY */
 .product-card::before {
   content: '';
   position: absolute;
@@ -22,17 +26,49 @@
   mask-composite: exclude;
   opacity: 0;
   transition: opacity 0.3s ease;
+  pointer-events: none; /* Prevent interference with clicks */
 }
 
 .product-card:hover::before {
   opacity: 1;
 }
 
+/* Hover effect - ONLY on mouse hover, not focus */
 .product-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
 }
 
+/* ============================================
+   CRITICAL FIX: Neutralize all focus styles on card container
+   This prevents the card from highlighting when buttons inside are clicked
+   ============================================ */
+.product-card:focus,
+.product-card:focus-visible,
+.product-card:active {
+  outline: none !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important; /* Keep base shadow only */
+  transform: none !important; /* No elevation */
+}
+
+/* Prevent focus-within from affecting the card visually */
+.product-card:focus-within {
+  /* Do NOT change box-shadow, transform, or add borders */
+  /* Keep the card looking normal when buttons inside have focus */
+}
+
+/* Ensure the ::before gradient border does NOT appear on focus */
+.product-card:focus::before,
+.product-card:focus-visible::before,
+.product-card:active::before,
+.product-card:focus-within::before {
+  opacity: 0 !important;
+}
+
+/* ============================================
+   PRODUCT IMAGE SECTION
+   ============================================ */
 .product-image-wrapper {
   width: 100%;
   padding-top: 66%;
@@ -48,6 +84,7 @@
   background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.3) 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .product-card:hover .product-image-wrapper::after {
@@ -62,10 +99,6 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
-}
-
-/* Prevent drag image and selection on mobile/desktop */
-.product-image {
   -webkit-user-drag: none;
   user-drag: none;
 }
@@ -74,6 +107,9 @@
   transform: scale(1.1);
 }
 
+/* ============================================
+   PRODUCT BODY (TEXT + BUTTON)
+   ============================================ */
 .product-body {
   padding: 16px;
   display: flex;
@@ -81,6 +117,27 @@
   flex: 1;
 }
 
+.product-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #1f2937;
+  line-height: 1.4;
+}
+
+.product-price {
+  margin: 0 0 16px 0;
+  font-weight: 700;
+  font-size: 1.3rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   SELLER ACTION BUTTONS (EDIT/DELETE)
+   ============================================ */
 .product-actions {
   position: absolute;
   top: 12px;
@@ -108,24 +165,18 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-.product-name {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 0 0 8px 0;
-  color: #1f2937;
-  line-height: 1.4;
+.icon-btn:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
 }
 
-.product-price {
-  margin: 0 0 16px 0;
-  font-weight: 700;
-  font-size: 1.3rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.icon-btn:active {
+  transform: scale(0.95);
 }
 
+/* ============================================
+   ADD TO CART BUTTON - BUYER ROLE
+   ============================================ */
 .add-to-cart {
   margin-top: auto;
   padding: 12px 20px;
@@ -140,17 +191,41 @@
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
-.add-to-cart:hover {
+.add-to-cart:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
   background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }
 
-.add-to-cart:active {
-  transform: translateY(0);
+/* CRITICAL: Proper focus-visible for keyboard navigation */
+.add-to-cart:focus-visible {
+  outline: 3px solid #fbbf24;
+  outline-offset: 3px;
 }
 
-/* Added to Cart Toast */
+/* Active state - brief press feedback */
+.add-to-cart:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+.add-to-cart:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   PREVENT TEXT SELECTION
+   ============================================ */
+.product-card, .product-card * {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* ============================================
+   TOAST NOTIFICATION (LEGACY - UNUSED)
+   ============================================ */
 .added-toast {
   position: absolute;
   top: 50%;
@@ -182,15 +257,9 @@
   }
 }
 
-/* Prevent accidental selection when clicking cards/buttons */
-.product-card, .product-card * {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-/* Grid container styles (used by ProductList) */
+/* ============================================
+   PRODUCT GRID LAYOUT
+   ============================================ */
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -200,6 +269,7 @@
   margin: 0 auto;
 }
 
+/* Responsive typography */
 .product-card .product-name {
   font-size: clamp(0.95rem, 2vw, 1.1rem);
 }
@@ -213,6 +283,9 @@
   padding: clamp(10px, 2vw, 12px) clamp(16px, 3vw, 20px);
 }
 
+/* ============================================
+   RESPONSIVE BREAKPOINTS
+   ============================================ */
 @media (max-width: 968px) {
   .product-grid {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));

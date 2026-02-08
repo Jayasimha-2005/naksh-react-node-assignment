@@ -119,7 +119,7 @@ function ProductCard({ product }) {
 
   return (
     <>
-      <article className="product-card">
+      <div className="product-card">
         <div className="product-image-wrapper">
           <img src={image} alt={name} className="product-image" draggable={false} onDragStart={(e) => e.preventDefault()} />
           {role === 'seller' && (
@@ -136,18 +136,15 @@ function ProductCard({ product }) {
             <button
               className="add-to-cart"
               type="button"
-              onClick={(e) => handleAddToCart(e)}
-              onPointerDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
-              onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
-              onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); }}
+              onClick={handleAddToCart}
               disabled={isAdding}
+              aria-label={`Add ${name} to cart`}
             >
               {isAdding ? 'Adding...' : '🛒 Add to Cart'}
             </button>
           )}
         </div>
-        {/* Add-to-cart button removed per user request (toast removed) */}
-      </article>
+      </div>
 
       {/* Edit Modal */}
       {showEditModal && (
