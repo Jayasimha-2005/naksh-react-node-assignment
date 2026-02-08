@@ -1,4 +1,38 @@
+# Dependencies
 node_modules
+
+# Environment variables (NEVER commit these!)
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# Build outputs
 dist
 build
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Misc
+.cache
+.temp
+
+# Security audit (keep local only)
+SECURITY.md
