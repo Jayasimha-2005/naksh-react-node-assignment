@@ -1,18 +1,18 @@
 import React from 'react';
 import './Header.css';
-import { useContext, useState, useRef, useEffect, createContext } from 'react';
+import { useContext, useState, useRef, useEffect } from 'react';
 import { CartContext } from '../context/CartContext';
 import Cart from './Cart';
 import { RoleContext } from '../context/RoleContext';
 
 function Header({ searchValue, onSearch, onViewCart }) {
   const safeDefault = { totalItems: 0, cartItems: [], removeFromCart: () => {}, updateQuantity: () => {} };
-  const SafeContext = CartContext || createContext(safeDefault);
-  const ctx = useContext(SafeContext) || safeDefault;
-  const totalItems = (ctx && ctx.totalItems) || 0;
-  const cartItems = (ctx && ctx.cartItems) || [];
-  const removeFromCart = (ctx && ctx.removeFromCart) || (() => {});
-  const updateQuantity = (ctx && ctx.updateQuantity) || (() => {});
+  // Use CartContext directly and fallback to a safe default to avoid destructuring null during HMR
+  const ctx = useContext(CartContext) || safeDefault;
+  const totalItems = ctx.totalItems || 0;
+  const cartItems = ctx.cartItems || [];
+  const removeFromCart = ctx.removeFromCart || (() => {});
+  const updateQuantity = ctx.updateQuantity || (() => {});
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   const roleCtx = useContext(RoleContext) || { role: 'buyer', setRole: () => {} };

@@ -22,6 +22,7 @@ function ProductList({ searchProp, onSearch }) {
 
     const load = async () => {
       setLoading(true);
+      setError(null);
       try {
         const res = await fetch(`${API_BASE}/products`, { signal });
         if (!res.ok) throw new Error('Failed to fetch products');
@@ -36,7 +37,7 @@ function ProductList({ searchProp, onSearch }) {
         // fallback to bundled demo data
         if (mounted) {
           setProducts(demoProducts.map((p) => ({ id: p.id, ...p })));
-          setError(null);
+          setError('Backend unavailable, showing demo products');
           setUsingDemo(true);
         }
       } finally {
@@ -58,7 +59,13 @@ function ProductList({ searchProp, onSearch }) {
       setLoading(true);
       fetch(`${API_BASE}/products`).then((r) => r.json()).then((data) => {
         setProducts(Array.isArray(data) ? data.map((p) => ({ id: p._id || p.id || p.productId || p.name, ...p })) : []);
-      }).catch(() => {}).finally(() => setLoading(false));
+        setUsingDemo(false);
+        setError(null);
+      }).catch(() => {
+        setProducts(demoProducts.map((p) => ({ id: p.id, ...p })));
+        setUsingDemo(true);
+        setError('Backend unavailable, showing demo products');
+      }).finally(() => setLoading(false));
     }
 
     window.addEventListener('products-updated', onProductsUpdated);
@@ -67,8 +74,6 @@ function ProductList({ searchProp, onSearch }) {
 
   const roleCtx = useContext(RoleContext) || { role: 'buyer' };
   const role = roleCtx && roleCtx.role ? roleCtx.role : 'buyer';
-
-  // Search is controlled by parent; no local effect required.
 
   const filtered = useMemo(() => {
     const key = (search || '').trim().toLowerCase();
@@ -79,20 +84,56 @@ function ProductList({ searchProp, onSearch }) {
   return (
     <>
       {role === 'seller' && (
-        <div style={{ padding: 12 }}>
+        <div style={{ padding: '0 24px' }}>
           <AddProduct />
         </div>
       )}
-      <main className="product-grid">
-        {loading && <div>Loading products...</div>}
-        {!loading && products.length === 0 && !error && <div>No products available.</div>}
-        {!loading && filtered.map((p) => <ProductCard key={p.id} product={p} />)}
-        {!loading && usingDemo && (
-          <div style={{ color: 'var(--muted-color, #666)', padding: 8, fontSize: 13 }}>
-            Showing demo data (backend unavailable)
-          </div>
-        )}
-      </main>
+      
+      {loading && (
+        <div style={{ textAlign: 'center', padding: 60 }}>
+          <div className="spinner"></div>
+          <p style={{ marginTop: 16, color: '#667eea', fontWeight: 600 }}>Loading amazing products...</p>
+        </div>
+      )}
+      
+      {!loading && filtered.length === 0 && (
+        <div style={{ textAlign: 'center', padding: 60, maxWidth: 500, margin: '0 auto' }}>
+          <div style={{ fontSize: '4rem', marginBottom: 16 }}>🔍</div>
+          <h2 style={{ color: '#374151', marginBottom: 8 }}>
+            {search ? 'No products found' : 'No products available'}
+          </h2>
+          <p style={{ color: '#6b7280' }}>
+            {search 
+              ? `Try searching for something else` 
+              : role === 'seller' 
+                ? 'Add your first product above' 
+                : 'Check back soon for new items'}
+          </p>
+        </div>
+      )}
+      
+      {!loading && filtered.length > 0 && (
+        <>
+          {usingDemo && error && (
+            <div style={{ 
+              margin: '24px auto',
+              maxWidth: 1400,
+              padding: '12px 24px',
+              background: '#fef3c7',
+              border: '1px solid #fbbf24',
+              borderRadius: 12,
+              color: '#92400e',
+              fontWeight: 500,
+              textAlign: 'center'
+            }}>
+              ⚠️ {error}
+            </div>
+          )}
+          <main className="product-grid">
+            {filtered.map((p) => <ProductCard key={p.id} product={p} />)}
+          </main>
+        </>
+      )}
     </>
   );
 }

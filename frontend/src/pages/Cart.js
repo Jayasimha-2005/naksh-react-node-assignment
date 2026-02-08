@@ -1,50 +1,102 @@
 import React, { useContext } from 'react';
 import { CartContext } from '../context/CartContext';
+import './Cart.css';
 
 function CartPage({ onBack }) {
-  const cart = useContext(CartContext) || { cartItems: [], updateQuantity: () => {}, removeFromCart: () => {}, totalPrice: 0 };
-  const { cartItems, updateQuantity, removeFromCart, totalPrice } = cart;
+  const cart = useContext(CartContext) || { cartItems: [], updateQuantity: () => {}, removeFromCart: () => {}, totalPrice: 0, totalItems: 0 };
+  const { cartItems, updateQuantity, removeFromCart, totalPrice, totalItems } = cart;
 
   return (
-    <main style={{ maxWidth: 1100, margin: '20px auto', padding: 12 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-        <h2 style={{ margin: 0 }}>Your Cart</h2>
-        <div>
-          <button onClick={() => onBack && onBack()} style={{ marginRight: 8 }}>Continue shopping</button>
-        </div>
+    <div className="cart-page">
+      <div className="cart-header">
+        <h1 className="cart-title">Shopping Cart ({totalItems || 0} items)</h1>
+        <button className="btn-secondary" onClick={() => onBack && onBack()}>
+          ← Continue Shopping
+        </button>
       </div>
 
       {cartItems.length === 0 ? (
-        <div style={{ padding: 24, border: '1px dashed #e6e6e6', borderRadius: 8 }}>Your cart is empty.</div>
+        <div className="cart-empty">
+          <div className="empty-icon">🛒</div>
+          <h2 style={{ color: '#374151', marginBottom: 8 }}>Your cart is empty</h2>
+          <p style={{ color: '#6b7280', marginBottom: 24 }}>Add some amazing jewelry to get started!</p>
+          <button className="btn-secondary" onClick={() => onBack && onBack()}>
+            Start Shopping
+          </button>
+        </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 16 }}>
-          <div>
-            {cartItems.map((it) => (
-              <div key={it.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 12, border: '1px solid #f3f3f3', borderRadius: 6, marginBottom: 8 }}>
-                <div>
-                  <div style={{ fontWeight: 600 }}>{it.name}</div>
-                  <div style={{ color: '#666' }}>₹{it.price} × {it.quantity}</div>
+        <div className="cart-layout">
+          <div className="cart-items-list">
+            {cartItems.map((it) => {
+              const subtotal = (Number(it.price) * Number(it.quantity || 1)).toFixed(2);
+              return (
+                <div key={it.id} className="cart-item">
+                  <div className="cart-item-details">
+                    <div>
+                      <div className="cart-item-name">{it.name}</div>
+                      <div className="cart-item-price">₹{it.price} each</div>
+                      <div className="cart-item-subtotal">Subtotal: ₹{subtotal}</div>
+                    </div>
+                    <div className="cart-item-actions">
+                      <div className="quantity-control">
+                        <button 
+                          className="quantity-btn" 
+                          onClick={() => updateQuantity(it.id, Math.max(1, (it.quantity || 1) - 1))}
+                          aria-label="Decrease quantity"
+                        >
+                          −
+                        </button>
+                        <div className="quantity-value">{it.quantity || 1}</div>
+                        <button 
+                          className="quantity-btn" 
+                          onClick={() => updateQuantity(it.id, (it.quantity || 1) + 1)}
+                          aria-label="Increase quantity"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <button 
+                        className="remove-btn" 
+                        onClick={() => removeFromCart(it.id)}
+                        aria-label="Remove item"
+                      >
+                        🗑️ Remove
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                  <button onClick={() => updateQuantity(it.id, Math.max(1, (it.quantity || 1) - 1))}>-</button>
-                  <div style={{ minWidth: 28, textAlign: 'center' }}>{it.quantity}</div>
-                  <button onClick={() => updateQuantity(it.id, (it.quantity || 1) + 1)}>+</button>
-                  <button onClick={() => removeFromCart(it.id)} style={{ color: '#c00' }}>Remove</button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
-          <aside style={{ border: '1px solid #f3f3f3', padding: 12, borderRadius: 6 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-              <div>Total</div>
-              <div style={{ fontWeight: 700 }}>₹{totalPrice}</div>
+          <aside className="cart-summary">
+            <h3 className="summary-title">Order Summary</h3>
+            <div className="summary-row">
+              <span>Subtotal ({totalItems} items)</span>
+              <span>₹{totalPrice.toFixed(2)}</span>
             </div>
-            <button style={{ width: '100%', padding: '10px 12px', background: '#0b5fff', color: '#fff', border: 'none', borderRadius: 6 }}>Proceed to Checkout</button>
+            <div className="summary-row">
+              <span>Shipping</span>
+              <span className="text-green-600">FREE</span>
+            </div>
+            <div className="summary-row">
+              <span>Tax (18% GST)</span>
+              <span>₹{(totalPrice * 0.18).toFixed(2)}</span>
+            </div>
+            <div className="summary-row total">
+              <span>Total</span>
+              <span>₹{(totalPrice * 1.18).toFixed(2)}</span>
+            </div>
+            <button className="checkout-btn">
+              🛍️ Proceed to Checkout
+            </button>
+            <div style={{ marginTop: 16, padding: 12, background: '#f0fdf4', borderRadius: 8, fontSize: '0.9rem', color: '#166534', textAlign: 'center' }}>
+              ✓ Secure Checkout · Free Shipping
+            </div>
           </aside>
         </div>
       )}
-    </main>
+    </div>
   );
 }
 
